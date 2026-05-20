@@ -1,0 +1,7 @@
+file_client: local
+file_roots:
+  base:
+    - .
+pillar_roots:
+  base:
+    - ./pillar
