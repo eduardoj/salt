@@ -1,6 +1,0 @@
-[Match]
-Name=ve-*
-
-[Network]
-IPMasquerade=yes
-DHCPServer=yes

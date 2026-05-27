@@ -33,11 +33,11 @@ bootstrap_minimal_container:
       openSUSE-release, shadow,
       systemd, systemd-networkd, systemd-resolved,
       rpm, zypper,
-      neovim,
+      neovim, ripgrep,
       iproute2, iputils, procps, hostname, curl, ca-certificates,
       coreutils, terminfo, glibc-locale, glibc-i18ndata
     ]
-      # - refresh: True
+    # - refresh: True
     - root: {{ container_dir }}
     - require:
       - service: ensure_container_is_stopped

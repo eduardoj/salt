@@ -13,9 +13,7 @@ remove_nspawn_config:
     - require:
       - service: ensure_container_is_stopped_for_purge
 
-# Remove the container root directory
-# Note: 'file.absent' is recursive. This will wipe out the directory structure
-# and any repository metadata created within it.
+# Remove the container root directory and all its contents
 remove_container_root_dir:
   file.absent:
     - name: {{ container_dir }}
