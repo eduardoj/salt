@@ -9,7 +9,7 @@ ensure_container_is_stopped_for_purge:
 # Remove the container's .nspawn configuration file
 remove_nspawn_config:
   file.absent:
-    - name: {{ container_dir }}.nspawn
+    - name: /etc/systemd/nspawn/{{ container_name }}.nspawn
     - require:
       - service: ensure_container_is_stopped_for_purge
 

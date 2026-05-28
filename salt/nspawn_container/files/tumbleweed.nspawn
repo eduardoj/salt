@@ -1,2 +1,10 @@
+{%- set bind_mounts = salt['pillar.get']('nspawn_container:bind_mounts', []) -%}
 [Network]
 VirtualEthernet=yes
+
+{% if bind_mounts -%}
+[Files]
+{%- for mount in bind_mounts %}
+Bind={{ mount.host_path }}:{{ mount.container_path }}:idmap{{ ',ro' if mount.read_only else '' }}
+{%- endfor %}
+{%- endif %}

@@ -43,7 +43,7 @@ bootstrap_minimal_container:
       - service: ensure_container_is_stopped
       - pkgrepo: repo_tumbleweed_container
 
-{{ container_dir }}.nspawn:
+/etc/systemd/nspawn/{{ container_name }}.nspawn:
   file.managed:
     - source: salt://salt/nspawn_container/files/tumbleweed.nspawn
     - user: root

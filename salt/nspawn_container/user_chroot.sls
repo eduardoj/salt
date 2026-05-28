@@ -1,4 +1,5 @@
 {% from "salt/nspawn_container/map.jinja" import username with context %}
+{% set bind_mounts = salt['pillar.get']('nspawn_container:bind_mounts', []) %}
 
 create_container_user:
   user.present:
@@ -33,4 +34,15 @@ configure_ssh_key_{{ authorized_user }}_{{ loop.index }}:
       - file: ensure_ssh_dir_permissions
     {% endfor %}
   {% endif %}
+{% endfor %}
+
+{% for mount in bind_mounts %}
+ensure_container_mount_point_{{ loop.index }}:
+  file.directory:
+    - name: {{ mount.container_path }}
+    - user: {{ username }}
+    - group: {{ username }}
+    - makedirs: True
+    - require:
+      - user: create_container_user
 {% endfor %}
