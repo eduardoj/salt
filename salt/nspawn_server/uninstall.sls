@@ -4,11 +4,19 @@ systemd-networkd_stop:
     - name: systemd-networkd
     - enable: False
 
-remove_networkd_global_override:
+# Remove the override.conf file if it exists to restore defaults
+remove_network_interface_override:
   file.absent:
-    - name: /etc/systemd/networkd.conf.d/systemd-nspawn-override.conf
+    - name: /etc/systemd/network/80-container-ve.network.d/override.conf
     - require:
       - service: systemd-networkd_stop
+
+# Clean up and remove the override directory as well
+remove_network_override_directory:
+  file.absent:
+    - name: /etc/systemd/network/80-container-ve.network.d
+    - require:
+      - file: remove_network_interface_override
 
 remove_container_interfaces_from_trusted:
   cmd.run:

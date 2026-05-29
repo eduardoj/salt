@@ -4,17 +4,30 @@ install_nspawn_requirements:
       - systemd-container
       - systemd-networkd
 
-configure_networkd_override:
+# Ensure the interface-specific override directory exists
+ensure_network_override_directory:
+  file.directory:
+    - name: /etc/systemd/network/80-container-ve.network.d
+    - user: root
+    - group: root
+    - mode: '0755'
+    - makedirs: True
+    - require:
+      - pkg: install_nspawn_requirements
+
+# Manage the override configuration file inside the directory
+configure_network_interface_override:
   file.managed:
-    - name: /etc/systemd/networkd.conf.d/systemd-nspawn-override.conf
+    - name: /etc/systemd/network/80-container-ve.network.d/override.conf
     - user: root
     - group: root
     - mode: '0644'
     - contents: |
         [Network]
+        Address=
         Address=172.16.10.1/24
     - require:
-      - pkg: install_nspawn_requirements
+      - file: ensure_network_override_directory
 
 add_container_interfaces_to_trusted:
   firewalld.present:
@@ -39,3 +52,10 @@ disable_networkd_wait_online:
     - enable: False
     - require:
       - pkg: install_nspawn_requirements
+
+# Restart systemd-networkd only if the override file changes
+restart_networkd_on_change:
+  service.running:
+    - name: systemd-networkd
+    - watch:
+      - file: configure_network_interface_override
