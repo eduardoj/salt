@@ -43,6 +43,17 @@ bootstrap_minimal_container:
       - service: ensure_container_is_stopped
       - pkgrepo: repo_tumbleweed_container
 
+# Ensure the ping binary operates correctly under strict SELinux/Namespace environments
+# Otherwise, we receive these errors when the user "user" throws a ping command:
+# ping: socktype: SOCK_RAW
+# ping: socket: Operation not permitted
+# ping: => missing cap_net_raw+p capability or setuid?
+ensure_ping_permissions_for_users:
+  file.managed:
+    - name: {{ container_dir }}/usr/bin/ping
+    - mode: 4755
+    - replace: False # Keep the binary intact, only enforce the permission bits
+
 /etc/systemd/nspawn/{{ container_name }}.nspawn:
   file.managed:
     - source: salt://salt/nspawn_container/files/tumbleweed.nspawn
