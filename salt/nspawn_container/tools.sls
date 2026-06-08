@@ -3,11 +3,9 @@
 # Install user-specific packages inside the container root
 install_container_utilities:
   pkg.installed:
-    - pkgs:
-      - neovim
-      - less
-      - git
-      - tmux
+    - pkgs: [
+      git, gzip, less, neovim, ripgrep, tar, tmux
+    ]
     - root: {{ container_dir }}
     - require:
       - pkg: bootstrap_minimal_container
